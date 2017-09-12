@@ -3,6 +3,9 @@
 
 # A COMPREHENSIVE GUIDE TO FONT LOADING STRATEGIES
 
+- 10 September 2017
+
+
 
 ## THE QUICK ANSWER
 
@@ -56,12 +59,21 @@ RECOMMENDATION: do not use - bad rendering performance
 
 ## font-display
 
-Add a new font-display: swap descriptor to your @font-face block to opt-in to FOUT on browsers that support it. Optionally, font-display: fallback or font-display: optional can be used if you consider web fonts to be unnecessary to the design.
+> WARNING
+- only supported by chrome and opera at this time
+- does not work with google-fonts or typekit because they control their CSS
+
+This is a new CSS descriptor that goes inside a @font-face block.  It tell the browser to render the backup font until the web font is loaded then swap.  The default browser behavior is FOIT.  You can accomplish this behavior with JS but one line of CSS is better.
+
+The font-display: swap descriptor to your @font-face block to opt-in to FOUT on browsers that support it. Optionally, font-display: fallback or font-display: optional can be used if you consider web fonts to be unnecessary to the design.
 
 RECOMMENDATION: Definitely add it to your @font-face blocks, but by itself it’s not sufficient.
 
 
 ## preload
+
+> WARNING
+- only supported by chrome at this time
 
 Add <link rel="preload" href="font.woff2" as="font" type="font/woff2" crossorigin> to fetch your font sooner. Pairs nicely with an unceremonious @font-face block and feel free to also throw in the font-display descriptor as well for bonus points.
 
@@ -79,10 +91,17 @@ RECOMMENDATION: Sure, I guess, but I wouldn’t be excited about it.
 
 ## Inline Data URI
 
+> ALIBABA AND MEDIUM STANDARD
+- This is what Alibaba and Medium use.
+
 There are typically two kinds of inlining covered by this method: in a blocking <link rel="stylesheet"> request or in a &lt;style> element in the server rendered markup. Both alibaba.com (two web fonts embedded in a blocking CSS request) and medium.com (seven web fonts) use this approach.
 
-RECOMMENDATION: Alibaba and Medium use this approach but the author does not recommend.
+RECOMMENDATION:
 
+- Alibaba and Medium use this approach but the author does not recommend.
+- Author: Only use this method if you really despise FOUT—I wouldn’t recommend it.
+
+The author did not recommend because fonts delay content and he wants a page size of < 14k.  One or two fonts will take you up to 40k.  The author's gold standard is `Critical FOFT with Data URI` below.  This displays the main font quickly by loading only a subset. Then full font after it finishes loading.
 
 PROS
 
@@ -105,12 +124,18 @@ CONS
 
 ## Asynchronous Data URI
 
+> WARNING
+- Has a very noticeable, but short FOIT while the stylesheet and Data URIs are being parsed.
+
 Use a tool like loadCSS to fetch a stylesheet with all of the fonts embedded as Data URIs. Often you’ll see this coupled with a localStorage method of storing the stylesheet on the user agent for repeat views.
 
 RECOMMENDATION: It’s OK but we can do better.
 
 
 ## FOUT with a Class
+
+> BASELINE STANDARD
+- This is the current baseline standard.
 
 Use the CSS Font Loading API with a polyfill to detect when a specific font has loaded and only apply that web font in your CSS after it has loaded successfully. Usually this means toggling a class on your <html> element. Use with SASS or LESS mixins for easier maintenance.
 
@@ -133,12 +158,18 @@ RECOMMENDATION: USE ONE OF THE IMPROVED CRITICAL FOFT VARIATIONS BELOW.
 
 ## Critical FOFT with Data URI
 
+> GOLD STANDARD
+- This is the current gold standard
+
 This variation of the Critical FOFT approach simply changes the mechanism through which we load the first stage. Instead of using our normal font loading JavaScript API to initiate a download, we simply embed the web font as a inline Data URI directly in the markup. As previously discussed, this will block initial render but since we’re only embedding a very small subset roman web font this is a small price to pay to mostly eliminate FOUT.
 
 RECOMMENDATION: THIS IS THE CURRENT GOLD STANDARD, IN MY OPINION.
 
 
 ## Critical FOFT with preload
+
+> WARNING
+- only supported by chrome at this time
 
 This variation of the Critical FOFT approach simply changes the mechanism through which we load the first stage. Instead of using our normal font loading JavaScript API to initiate a download, we use the new preload web standard as described above in the preload method. This should trigger the download sooner than previously possible.
 
