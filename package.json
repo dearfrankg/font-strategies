@@ -1,0 +1,23 @@
+{
+  "name": "@cogent-labs/font-strategies",
+  "version": "1.0.0",
+  "description": "- 10 September 2017",
+  "main": "index.js",
+  "scripts": {
+    "start": "http-server src "
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dearfrankg/font-strategies.git"
+  },
+  "keywords": [],
+  "author": "Frank Gutierrez <npm.frankg@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/dearfrankg/font-strategies/issues"
+  },
+  "homepage": "https://github.com/dearfrankg/font-strategies#readme",
+  "dependencies": {
+    "http-server": "^0.10.0"
+  }
+}
